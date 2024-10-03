@@ -1,0 +1,16 @@
+﻿@page "/parkours/{Category}"
+
+@using RallyObedienceApp.Components.Pages.Parkours
+@using RallyObedienceApp.Components.ParkourView
+
+@inherits ParkoursBase
+
+@if (ParkourIds != null && ParkourIds.Any())
+{
+    <h1>@(Category.ToUpper())</h1>
+    @foreach (var parkour in ParkourIds)
+    {
+        <ParkourView Id="@parkour"></ParkourView>
+        <hr />
+    }
+}

@@ -1,0 +1,65 @@
+﻿using RallyObedienceApp.Persistency.Models;
+
+namespace RallyObedienceApp.Persistency.Data.Parkours.RO_Z;
+
+public static class Parkour_00001
+{
+    public static ParkourItem Create() => new ParkourItem
+    {
+        ID = "RO-Z-00001",
+        Author = "Shrek",
+        Category = "Z",
+        Description = "Z 00001",
+        Positions = new List<PositionDto>
+        {
+            new PositionDto
+            {
+                Exercises = new List<PositionExercises>
+                {
+                    new PositionExercises
+                    {
+                        PositionID = 1,
+                        ExerciseId = "Start"
+                    }
+                },
+                ID = 1,
+                Left = 2.0,
+                ParkourID = "RO-Z-00001",
+                Rotation = 0.0,
+                Top = 2.0
+            },
+            new PositionDto
+            {
+                Exercises = new List<PositionExercises>
+                {
+                    new PositionExercises
+                    {
+                        PositionID = 2,
+                        ExerciseId = "D0a"
+                    }
+                },
+                ID = 2,
+                Left = 2.0,
+                ParkourID = "RO-Z-00001",
+                Rotation = 0.0,
+                Top = 5.0
+            },
+            new PositionDto
+            {
+                Exercises = new List<PositionExercises>
+                {
+                    new PositionExercises
+                    {
+                        PositionID = 3,
+                        ExerciseId = "Finish"
+                    }
+                },
+                ID = 3,
+                Left = 2.0,
+                ParkourID = "RO-Z-00001",
+                Rotation = 0.0,
+                Top = 8.0
+            }
+        }
+    };
+}

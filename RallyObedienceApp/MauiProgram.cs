@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using RallyObedienceApp.Components;
+using RallyObedienceApp.Pages;
 using RallyObedienceApp.Persistency;
 
 namespace RallyObedienceApp
@@ -19,7 +20,8 @@ namespace RallyObedienceApp
             builder.Services.AddMauiBlazorWebView();
             builder.Services
                 .AddPersistency()
-                .AddComponents();
+                .AddComponents()
+                .AddPages();
 
 #if DEBUG
     		builder.Services.AddBlazorWebViewDeveloperTools();

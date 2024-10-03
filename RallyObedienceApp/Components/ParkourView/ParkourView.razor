@@ -1,0 +1,13 @@
+﻿@inherits ParkourViewBase
+
+@if (Parkour is null)
+{
+    <h4>Loading ...</h4>
+}
+else
+{
+    <h1>@Parkour.ID</h1>
+    <h2>@Parkour.Author</h2>
+    <p>@((MarkupString) Parkour.Description)</p>
+    <h3>@Parkour.Category</h3>
+}

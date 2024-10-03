@@ -25,9 +25,23 @@
                 <a class="dropdown-item" href="cards/ro-3">>>> RO-3</a>
             }
         </div>
+        <div class="nav-item px-3 dropdown">
+            <NavLink class="nav-link" @onclick="()=>expandParkours = !expandParkours">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Parkours
+            </NavLink>
+            @if (expandParkours)
+            {
+                <a class="dropdown-item" href="parkours/ro-z">>>> RO-Z</a>
+                <a class="dropdown-item" href="parkours/ro-1">>>> RO-1</a>
+                <a class="dropdown-item" href="parkours/ro-2">>>> RO-2</a>
+                <a class="dropdown-item" href="parkours/ro-3">>>> RO-3</a>
+            }
+        </div>
+
     </nav>
 </div>
 
 @code {
     private bool expandCards = false;
+    private bool expandParkours = false;
 }
