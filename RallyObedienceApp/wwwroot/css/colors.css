@@ -1,0 +1,38 @@
+﻿:root {
+    --primary-color: #4CAF50; /* Jasná zelená */
+    --secondary-color: #2196F3; /* Jasná modrá */
+    --accent-color: #FF9800; /* Oranžová */
+    --background-color: #FFFFFF; /* Bílá */
+    --text-color: #333333; /* Tmavě šedá */
+    --highlight-color: #F44336; /* Červená */
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: Arial, sans-serif;
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+.button {
+    background-color: var(--accent-color);
+    color: var(--background-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .button:hover {
+        background-color: var(--secondary-color);
+    }
+
+.alert {
+    background-color: var(--highlight-color);
+    color: var(--background-color);
+    padding: 10px;
+    border-radius: 5px;
+}

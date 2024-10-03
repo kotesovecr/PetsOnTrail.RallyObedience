@@ -1,0 +1,33 @@
+﻿@inherits ExerciseBase
+
+<div>
+    @if (Exercise == null)
+    {
+        <h4>Loading ...</h4>
+    }
+    else
+    {
+        <h3>@Exercise.ID</h3>
+        <h4>@Exercise.Name</h4>
+        <p>@Exercise.Description</p>
+
+        <img src="@Exercise.Image">
+        <table>
+            <thead>
+                <tr>
+                    <th>Cvik</th>
+                    <th>Hlavní</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var exercise in Exercise.Partials)
+                {
+                    <tr>
+                        <td>@exercise.Exercise</td>
+                        <td>@exercise.IsMain</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
