@@ -3,7 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RallyObedienceApp", "RallyObedienceApp\RallyObedienceApp.csproj", "{94C2B405-03AA-41BB-80E3-262867A78409}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RallyObedienceApp", "RallyObedienceApp\RallyObedienceApp.csproj", "{94C2B405-03AA-41BB-80E3-262867A78409}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{937C47C8-D85C-4C07-A654-49F57915EA37}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\novy-rad-ro-09-24-pdf.pdf = Documentation\novy-rad-ro-09-24-pdf.pdf
+		Documentation\RO1.pdf = Documentation\RO1.pdf
+		Documentation\RO2.pdf = Documentation\RO2.pdf
+		Documentation\RO3.pdf = Documentation\RO3.pdf
+		Documentation\ROZ.pdf = Documentation\ROZ.pdf
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

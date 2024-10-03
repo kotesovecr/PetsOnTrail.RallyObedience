@@ -13,15 +13,21 @@
                 <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+        <div class="nav-item px-3 dropdown">
+            <NavLink class="nav-link" @onclick="()=>expandCards = !expandCards">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Cards
             </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
+            @if (expandCards)
+            {
+                <a class="dropdown-item" href="cards/ro-z">>>> RO-Z</a>
+                <a class="dropdown-item" href="cards/ro-1">>>> RO-1</a>
+                <a class="dropdown-item" href="cards/ro-2">>>> RO-2</a>
+                <a class="dropdown-item" href="cards/ro-3">>>> RO-3</a>
+            }
         </div>
     </nav>
 </div>
+
+@code {
+    private bool expandCards = false;
+}
