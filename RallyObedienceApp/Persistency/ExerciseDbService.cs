@@ -44,6 +44,8 @@ public class ExerciseDbService
             await Database.CreateTableAsync<ExercisePartial>();
 
             await AddToDb(Start.CreateMain(), Start.CreatePartials());
+            await AddToDb(Finish.CreateMain(), Finish.CreatePartials());
+            await AddToDb(D0a.CreateMain(), D0a.CreatePartials());
             await AddToDb(Z_001.CreateMain(), Z_001.CreatePartials());
         }
         finally

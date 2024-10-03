@@ -16,7 +16,7 @@ internal static class Z_001
 
     public static ExerciseItem CreateMain() => new()
     {
-        ID = "Z-001",
+        ID = ID,
         Category = "Z",
         Number = "001",
         Name = Name,
