@@ -7,27 +7,45 @@
     }
     else
     {
-        <h3>@Exercise.ID</h3>
-        <h4>@Exercise.Name</h4>
-        <p>@Exercise.Description</p>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h3>@Exercise.ID</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <img class="img-fluid" src="@Exercise.Image">
+                </div>
+                <div class="col-8">
+                    <p>@Exercise.Description</p>
+                </div>
+            </div>
 
-        <img src="@Exercise.Image">
-        <table>
-            <thead>
-                <tr>
-                    <th>Cvik</th>
-                    <th>Hlavní</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var exercise in Exercise.Partials)
-                {
-                    <tr>
-                        <td>@exercise.Exercise</td>
-                        <td>@exercise.IsMain</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+            @if (Exercise.Partials != null && Exercise.Partials.Any())
+            {
+                <div class="row">
+                    <div class="col">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Cvik</th>
+                                    <th>Hlavní</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exercise in Exercise.Partials)
+                                {
+                                    <tr>
+                                        <td>@exercise.Exercise</td>
+                                        <td>@exercise.IsMain</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
     }
 </div>

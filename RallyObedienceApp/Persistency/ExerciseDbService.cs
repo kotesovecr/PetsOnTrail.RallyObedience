@@ -1,4 +1,4 @@
-﻿using RallyObedienceApp.Persistency.Data.Exercises;
+﻿using RallyObedienceApp.Persistency.Data.Exercises.RO_Z;
 using RallyObedienceApp.Persistency.Models;
 using SQLite;
 
@@ -9,20 +9,55 @@ public class ExerciseDbService
     private const string DatabaseFilename = "ExerciseDb.db3";
     private string DatabasePath => Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
     SQLiteAsyncConnection? Database;
+    static SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
     public async Task InitAsync()
     {
-        if (Database is not null)
-            return;
+        await semaphoreSlim.WaitAsync();
+        try
+        {
+            if (Database is not null)
+            {
+                return;
+            }
 
-        Database = new SQLiteAsyncConnection(DatabasePath);
-        var result = await Database.CreateTableAsync<ExerciseItem>();
-        await Database.CreateTableAsync<ExercisePartial>();
+            Database = new SQLiteAsyncConnection(DatabasePath);
 
-        await Database.InsertOrReplaceAsync(Z_001.CreateMain());
+            try
+            {
+                await Database.DropTableAsync<ExerciseItem>();
+            }
+            catch (SQLiteException)
+            {
+                ; // ignore it
+            }
+            var result = await Database.CreateTableAsync<ExerciseItem>();
 
-        foreach (var partial in Z_001.CreatePartials())
-            await Database.InsertOrReplaceAsync(partial);
+            try
+            {
+                await Database.DropTableAsync<ExercisePartial>();
+            }
+            catch (SQLiteException)
+            {
+                ; // ignore it
+            }
+            await Database.CreateTableAsync<ExercisePartial>();
+
+            await AddToDb(Start.CreateMain(), Start.CreatePartials());
+            await AddToDb(Z_001.CreateMain(), Z_001.CreatePartials());
+        }
+        finally
+        {
+            semaphoreSlim.Release();
+        }
+    }
+
+    private async Task AddToDb(ExerciseItem exerciseItem, List<ExercisePartial> partials)
+    {
+        await Database!.InsertAsync(exerciseItem);
+
+        foreach (var partial in partials)
+            await Database.InsertAsync(partial);
     }
 
     public async Task InsertAsync(ExerciseItem exerciseItem)

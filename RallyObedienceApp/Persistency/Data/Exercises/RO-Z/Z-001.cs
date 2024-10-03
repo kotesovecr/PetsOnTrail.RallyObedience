@@ -1,6 +1,6 @@
 ﻿using RallyObedienceApp.Persistency.Models;
 
-namespace RallyObedienceApp.Persistency.Data.Exercises;
+namespace RallyObedienceApp.Persistency.Data.Exercises.RO_Z;
 
 internal static class Z_001
 {
@@ -22,8 +22,7 @@ internal static class Z_001
         Name = Name,
         Description = Description,
         Partials = Partials,
-        Image = "/imgs/exercises/ROZ/0008.svg",
-        Done = Done
+        Image = "/imgs/exercises/ROZ/0008.svg"
     };
 
     public static List<ExercisePartial> CreatePartials() => Partials.Select(partial => new ExercisePartial

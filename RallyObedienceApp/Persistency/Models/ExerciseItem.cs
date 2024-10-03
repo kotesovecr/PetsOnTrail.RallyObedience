@@ -15,9 +15,6 @@ public class ExerciseItem
 
     [OneToMany(CascadeOperations = CascadeOperation.All)]
     public List<ExercisePartial> Partials { get; set; } = new();
-    public bool Done { get; set; } = true;
-
-
 }
 
 public class ExercisePartial

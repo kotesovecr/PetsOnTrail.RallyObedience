@@ -17,6 +17,10 @@ h1, h2, h3 {
     color: var(--primary-color);
 }
 
+h4, h5, h6, p {
+    color: var(--secondary-color);
+}
+
 .button {
     background-color: var(--accent-color);
     color: var(--background-color);
