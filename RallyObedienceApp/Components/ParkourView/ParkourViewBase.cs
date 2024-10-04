@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using OpenTK.Graphics.ES10;
 using RallyObedienceApp.Persistency;
 using RallyObedienceApp.Persistency.Models;
 
@@ -26,7 +25,7 @@ public class ParkourViewBase : ComponentBase
             var exercises = Parkour.Positions.SelectMany(p => p.Exercises).Select(e => e.ExerciseId).Distinct();
             foreach (var exerciseId in exercises)
             {
-                exerciseDictionary[exerciseId] = (await ExerciseDbService.GetItemAsync(exerciseId))?.Image;
+                exerciseDictionary[exerciseId] = (await ExerciseDbService.GetItemAsync(exerciseId))?.Image ?? string.Empty;
             }
 
             var positions = Parkour?.Positions.Select(p => new { y = p.Top, x = p.Left, exercises = p.Exercises.Select(e => new { src = exerciseDictionary[e.ExerciseId] })});

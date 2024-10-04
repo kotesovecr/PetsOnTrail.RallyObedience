@@ -35,6 +35,11 @@ public static class Parkour_00001
                     new PositionExercises
                     {
                         PositionID = 2,
+                        ExerciseId = "Z-001"
+                    },
+                    new PositionExercises
+                    {
+                        PositionID = 2,
                         ExerciseId = "D0a"
                     }
                 },
