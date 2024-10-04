@@ -22,13 +22,27 @@ public class ParkourViewBase : ComponentBase
         if (Parkour is not null)
         {
             var exerciseDictionary = new Dictionary<string, string>();
+            var exercisePartialDictionary = new Dictionary<string, bool>();
             var exercises = Parkour.Positions.SelectMany(p => p.Exercises).Select(e => e.ExerciseId).Distinct();
             foreach (var exerciseId in exercises)
             {
-                exerciseDictionary[exerciseId] = (await ExerciseDbService.GetItemAsync(exerciseId))?.Image ?? string.Empty;
+                var exercise = await ExerciseDbService.GetItemAsync(exerciseId);
+
+                exerciseDictionary[exerciseId] = exercise?.Image ?? string.Empty;
+                exercisePartialDictionary[exerciseId] = exercise?.Number.Contains("D") ?? false;
             }
 
-            var positions = Parkour?.Positions.Select(p => new { y = p.Top, x = p.Left, exercises = p.Exercises.Select(e => new { src = exerciseDictionary[e.ExerciseId] })});
+            var positions = Parkour?.Positions
+                                .Select(p => new 
+                                    { 
+                                        y = p.Top, 
+                                        x = p.Left, 
+                                        exercises = p.Exercises
+                                                        .Select(e => new 
+                                                            { 
+                                                                src = exerciseDictionary[e.ExerciseId], 
+                                                                partial = exercisePartialDictionary[e.ExerciseId] 
+                                                            })});
 
             // mPx - meter per pixels - 1m = 50px
             // width of parkour = 20m

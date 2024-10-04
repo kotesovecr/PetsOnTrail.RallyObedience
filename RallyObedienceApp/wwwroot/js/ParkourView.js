@@ -23,12 +23,39 @@ export async function drawParkour(mPx, h, w, positions) {
         context.strokeStyle = "grey";
         context.stroke();
 
-        positions.forEach(function (position) {
+        let exerciseCounter = 1;
+        for (const position of positions) {
             let imgPadding = 0; // Use let to ensure proper block scoping
 
             for (const exercise of position.exercises) {
+                let currentPadding = imgPadding; // Capture imgPadding for this iteration
+
+                if (exercise.partial == false) {
+                    imgPadding += mPx;
+
+                    const squareX = position.x * mPx + padding + currentPadding;
+                    const squareY = position.y * mPx + padding;
+
+                    context.fillStyle = 'lightblue';
+                    context.fillRect(squareX, squareY, mPx, mPx);
+
+                    context.fillStyle = 'black';
+                    context.font = '30px Arial';
+                    context.textAlign = 'center';
+                    context.textBaseline = 'middle';
+
+                    const textX = squareX + mPx / 2;
+                    const textY = squareY + mPx / 2;
+                    context.fillText(exerciseCounter, textX, textY);
+
+                    currentPadding += mPx;
+
+                    exerciseCounter++;
+                }
+
+
+                // Draw image of exercise
                 const img = new Image();
-                const currentPadding = imgPadding; // Capture imgPadding for this iteration
 
                 img.src = exercise.src;
 
@@ -43,7 +70,7 @@ export async function drawParkour(mPx, h, w, positions) {
 
                 imgPadding += mPx; // Increment imgPadding for the next image
             }
-        });
+        }
     }
 
     drawIt();
