@@ -46,7 +46,14 @@ public class ExerciseDbService
             await AddToDb(Start.CreateMain(), Start.CreatePartials());
             await AddToDb(Finish.CreateMain(), Finish.CreatePartials());
             await AddToDb(D0a.CreateMain(), D0a.CreatePartials());
+            await AddToDb(D0b.CreateMain(), D0b.CreatePartials());
+            await AddToDb(D0c.CreateMain(), D0c.CreatePartials());
+            await AddToDb(D0d.CreateMain(), D0d.CreatePartials());
             await AddToDb(Z_001.CreateMain(), Z_001.CreatePartials());
+            await AddToDb(Z_002.CreateMain(), Z_002.CreatePartials());
+            await AddToDb(Z_003.CreateMain(), Z_003.CreatePartials());
+            await AddToDb(Z_004.CreateMain(), Z_004.CreatePartials());
+            await AddToDb(Z_005.CreateMain(), Z_005.CreatePartials());
         }
         finally
         {
