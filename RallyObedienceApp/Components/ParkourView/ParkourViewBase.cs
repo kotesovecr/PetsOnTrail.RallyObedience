@@ -29,7 +29,7 @@ public class ParkourViewBase : ComponentBase
                 exerciseDictionary[exerciseId] = (await ExerciseDbService.GetItemAsync(exerciseId))?.Image;
             }
 
-            var positions = Parkour?.Positions.Select(p => new { x = p.Top, y = p.Left, exercises = p.Exercises.Select(e => new { src = exerciseDictionary[e.ExerciseId] })});
+            var positions = Parkour?.Positions.Select(p => new { y = p.Top, x = p.Left, exercises = p.Exercises.Select(e => new { src = exerciseDictionary[e.ExerciseId] })});
 
             // mPx - meter per pixels - 1m = 50px
             // width of parkour = 20m

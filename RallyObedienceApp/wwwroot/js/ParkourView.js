@@ -24,13 +24,19 @@ export async function drawParkour(mPx, h, w, positions) {
         context.stroke();
 
         positions.forEach(function (position) {
-            var img = new Image();
+            var imgPadding = 0;
 
-            img.src = position.exercises[0].src;
+            position.exercises.forEach(function (exercise) {
+                var img = new Image();
 
-            img.onload = function () {
-                context.drawImage(img, position.x * mPx + padding, position.y * mPx + padding, mPx / 2, mPx / 2);
-            };
+                img.src = exercise.src;
+
+                img.onload = function () {
+                    context.drawImage(img, position.x * mPx + padding + imgPadding, position.y * mPx + padding, mPx, mPx);
+                };
+
+                imgPadding += mPx;
+            });
         });
     }
 

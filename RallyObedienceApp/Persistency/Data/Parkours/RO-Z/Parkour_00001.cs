@@ -26,7 +26,7 @@ public static class Parkour_00001
                 Left = 2.0,
                 ParkourID = "RO-Z-00001",
                 Rotation = 0.0,
-                Top = 2.0
+                Top = 12.0
             },
             new PositionDto
             {
@@ -42,7 +42,7 @@ public static class Parkour_00001
                 Left = 2.0,
                 ParkourID = "RO-Z-00001",
                 Rotation = 0.0,
-                Top = 5.0
+                Top = 7.0
             },
             new PositionDto
             {
@@ -58,7 +58,7 @@ public static class Parkour_00001
                 Left = 2.0,
                 ParkourID = "RO-Z-00001",
                 Rotation = 0.0,
-                Top = 8.0
+                Top = 2.0
             }
         }
     };
