@@ -1,5 +1,8 @@
 ﻿@inherits ParkourViewBase
 
+@using SkiaSharp
+@using SkiaSharp.Views.Blazor
+
 @if (Parkour is null)
 {
     <h4>Loading ...</h4>
@@ -11,3 +14,7 @@ else
     <p>@((MarkupString) Parkour.Description)</p>
     <h3>@Parkour.Category</h3>
 }
+
+<div class="parkour-container">
+    <canvas></canvas>
+</div>

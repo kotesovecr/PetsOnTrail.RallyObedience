@@ -15,7 +15,7 @@ public class ParkoursBase : ComponentBase
         }
         else if (Category.ToUpper() == "RO-Z")
         {
-            ParkourIds = new List<string> { "RO-Z-00001", "RO-Z-00002", "RO-Z-00003" };
+            ParkourIds = new List<string> { "RO-Z-00001" /*, "RO-Z-00002", "RO-Z-00003"*/ };
         }
     }
 }
