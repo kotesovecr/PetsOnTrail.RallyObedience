@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using OpenTK.Graphics.ES10;
 using RallyObedienceApp.Persistency;
 using RallyObedienceApp.Persistency.Models;
 
@@ -9,6 +10,7 @@ public class ParkourViewBase : ComponentBase
 {
     [Parameter] public string Id { get; set; } = string.Empty;
     [Inject] protected ParkourDbService DbService { get; set; }
+    [Inject] protected ExerciseDbService ExerciseDbService { get; set; }
     [Inject] protected IJSRuntime JSRuntime { get; set; }
     IJSObjectReference module;
 
@@ -18,7 +20,22 @@ public class ParkourViewBase : ComponentBase
     {
         Parkour = await DbService.GetItemAsync(Id);
 
-        await module.InvokeVoidAsync("drawParkour", 20, 20);
+        if (Parkour is not null)
+        {
+            var exerciseDictionary = new Dictionary<string, string>();
+            var exercises = Parkour.Positions.SelectMany(p => p.Exercises).Select(e => e.ExerciseId).Distinct();
+            foreach (var exerciseId in exercises)
+            {
+                exerciseDictionary[exerciseId] = (await ExerciseDbService.GetItemAsync(exerciseId))?.Image;
+            }
+
+            var positions = Parkour?.Positions.Select(p => new { x = p.Top, y = p.Left, exercises = p.Exercises.Select(e => new { src = exerciseDictionary[e.ExerciseId] })});
+
+            // mPx - meter per pixels - 1m = 50px
+            // width of parkour = 20m
+            // height of parkour = 20m
+            await module.InvokeVoidAsync("drawParkour", 50, 20, 20, positions);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)

@@ -1,5 +1,4 @@
-export async function drawParkour(h, w) {
-    var mPx = 50; // 10px = 1m
+export async function drawParkour(mPx, h, w, positions) {
     var padding = 50;
 
     var height = h * mPx;
@@ -23,6 +22,16 @@ export async function drawParkour(h, w) {
 
         context.strokeStyle = "black";
         context.stroke();
+
+        positions.forEach(function (position) {
+            var img = new Image();
+
+            img.src = position.exercises[0].src;
+
+            img.onload = function () {
+                context.drawImage(img, position.x * mPx + padding, position.y * mPx + padding, mPx / 2, mPx / 2);
+            };
+        });
     }
 
     drawIt();
