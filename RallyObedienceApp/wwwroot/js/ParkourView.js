@@ -22,6 +22,13 @@ export function addParkourExercise(id, exerciseId, number, left, top) {
         });
 }
 
+export function updateParkourExercise(id, exerciseId, number, left, top) {
+    DotNet.invokeMethodAsync('RallyObedienceApp', 'UpdateParkourExerciseAsync', id, exerciseId, number, left, top)
+        .then(data => {
+            console.log(data);
+        });
+}
+
 export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) {
     const padding = 50;
 
@@ -153,10 +160,25 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
         let isDragging = false;
         let dragTarget = null;
         let movingExercise = null;
+        let adding = false;
+        let updating = false;
+        let deleting = false;
 
         function drawMovingExercise() {
+            if (movingExercise != null) {
+                var position = positions.find(p => p.id == movingExercise.id_position);
+                if (position != null) {
+                    position.left = (movingExercise.x - padding) / mPx;
+                    position.top = (movingExercise.y - padding) / mPx;
+                }
+            }
+
             drawIt();
             drawExerciseList(false);
+
+            if (movingExercise !== null)
+                context.fillText("Moving exercise: " + movingExercise.x + ', ' + movingExercise.y, 10, 10);
+            
         }
         drawMovingExercise();
 
@@ -167,7 +189,32 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
 
                 if (isInside) {
                     movingExercise = exercisePosition;
+                    updating = false;
+                    deleting = false;
+                    adding = true;
                     return true;
+                }
+            }
+
+            if (adding == false && updating == false && deleting == false) {
+                for (const position of positions) {
+                    for (const exercise of position.exercises) {
+                        let isInside = x >= position.left * mPx + padding && x <= position.left * mPx + padding + mPx &&
+                            y >= position.top * mPx + padding && y <= position.top * mPx + padding + mPx;
+
+                        if (isInside) {
+                            movingExercise = {
+                                id: exercise.exerciseId,
+                                id_position: position.id,
+                                x: position.left * mPx + padding,
+                                y: position.top * mPx + padding
+                            };
+                            updating = true;
+                            deleting = true;
+                            adding = false;
+                            return true;
+                        }
+                    }
                 }
             }
         }
@@ -205,18 +252,27 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
             dragTarget = null;
 
             // TODO: second parameter is number
-            let uuid = generateUUID();
-            addParkourExercise(uuid, movingExercise.id, "", movingExercise.x / mPx, movingExercise.y / mPx);
+            if (adding) {
+                let uuid = generateUUID();
+                addParkourExercise(uuid, movingExercise.id, "", (movingExercise.x - padding) / mPx, (movingExercise.y - padding) / mPx);
 
-            positions.push({
-                id: uuid,
-                exercises: [{
-                    exerciseId: movingExercise.id,
-                    number: ""
-                }],
-                left: movingExercise.x / mPx,
-                top: movingExercise.y / mPx
-            });
+                positions.push({
+                    id: uuid,
+                    exercises: [{
+                        exerciseId: movingExercise.id,
+                        number: ""
+                    }],
+                    left: (movingExercise.x - padding) / mPx,
+                    top: (movingExercise.y - padding) / mPx
+                });
+
+                adding = false;
+            }
+
+            if (updating) {
+                updateParkourExercise(movingExercise.id_position, movingExercise.id, movingExercise.number, (movingExercise.x - padding) / mPx, (movingExercise.y - padding) / mPx);
+                updating = false;
+            }
 
             movingExercise = null;
 

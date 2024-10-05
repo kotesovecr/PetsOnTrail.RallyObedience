@@ -90,6 +90,12 @@ public class ParkourViewBase : ComponentBase
 
     private async Task LocalAddParkourExerciseInternalAsync(string id, string exerciseId, string number, double left, double top)
     {
+        if (left < 0)
+            left = 0;
+
+        if (top < 0)
+            top = 0;
+
         Parkour?.Positions.Add(new PositionDto
         {
             Exercises = new List<PositionExercises>
@@ -114,6 +120,12 @@ public class ParkourViewBase : ComponentBase
 
     private async Task LocalUpdateParkourExerciseInternalAsync(int positionId, string exerciseId, string number, double left, double top)
     {
+        if (left < 0)
+            left = 0;
+
+        if (top < 0)
+            top = 0;
+
         var exercise = Parkour?.Positions.FirstOrDefault(p => p.ID == positionId)?.Exercises.FirstOrDefault(e => e.ExerciseId == exerciseId);
         if (exercise is not null)
         {
