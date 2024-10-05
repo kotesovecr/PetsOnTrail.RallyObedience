@@ -270,7 +270,13 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
             }
 
             if (updating) {
-                updateParkourExercise(movingExercise.id_position, movingExercise.id, movingExercise.number, (movingExercise.x - padding) / mPx, (movingExercise.y - padding) / mPx);
+                let exercisePadding = 0;
+                for (let exercise of positions.find(p => p.id == movingExercise.id_position).exercises) {
+                    updateParkourExercise(movingExercise.id_position, exercise.id, exercise.number, (movingExercise.x - padding + exercisePadding) / mPx, (movingExercise.y - padding) / mPx);
+
+                    exercisePadding += mPx;
+                };
+                
                 updating = false;
             }
 
