@@ -41,13 +41,22 @@ public class ParkourViewBase : ComponentBase
                                                         .Select(e => new 
                                                             { 
                                                                 src = exerciseDictionary[e.ExerciseId], 
-                                                                partial = exercisePartialDictionary[e.ExerciseId] 
+                                                                partial = exercisePartialDictionary[e.ExerciseId],
+                                                                number = e.Number
                                                             })});
+
+            var exercisesToDraw = (await ExerciseDbService.GetCategoryAsync("Z"))
+                                            .Select(e => new
+                                                            {
+                                                                src = e.Image,
+                                                                name = e.Name,
+                                                            });
 
             // mPx - meter per pixels - 1m = 50px
             // width of parkour = 20m
             // height of parkour = 20m
-            await module.InvokeVoidAsync("drawParkour", 50, 20, 20, positions);
+            // await module.InvokeVoidAsync("drawParkour", 50, 20, 20, positions);
+            await module.InvokeVoidAsync("drawParkour", 50, 20, 20, positions, true, exercisesToDraw);
         }
     }
 

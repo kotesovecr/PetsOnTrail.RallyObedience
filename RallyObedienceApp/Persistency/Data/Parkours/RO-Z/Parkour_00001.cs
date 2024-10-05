@@ -34,6 +34,7 @@ public static class Parkour_00001
                 {
                     new PositionExercises
                     {
+                        Number = "1",
                         PositionID = 2,
                         ExerciseId = "Z-001"
                     },
@@ -41,7 +42,29 @@ public static class Parkour_00001
                     {
                         PositionID = 2,
                         ExerciseId = "D0a"
-                    }
+                    },
+                    new PositionExercises
+                    {
+                        PositionID = 2,
+                        ExerciseId = "D0b"
+                    },
+                    new PositionExercises
+                    {
+                        Number = "2",
+                        PositionID = 2,
+                        ExerciseId = "Z-002"
+                    },
+                    new PositionExercises
+                    {
+                        Number = "3",
+                        PositionID = 2,
+                        ExerciseId = "Z-003"
+                    },
+                    new PositionExercises
+                    {
+                        PositionID = 2,
+                        ExerciseId = "D0c"
+                    },
                 },
                 ID = 2,
                 Left = 2.0,

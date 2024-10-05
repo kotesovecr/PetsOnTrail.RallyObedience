@@ -39,5 +39,7 @@ public class PositionExercises
     [ForeignKey(typeof(PositionDto))]
     public int PositionID { get; set; }
 
+    public string Number { get; set; } = string.Empty;
+
     public string ExerciseId { get; set; } = string.Empty;
 }

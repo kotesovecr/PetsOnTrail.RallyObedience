@@ -95,4 +95,22 @@ public class ExerciseDbService
 
         return exerciseItem;
     }
+
+    public async Task<List<ExerciseItem>> GetCategoryAsync(string category)
+    {
+        await InitAsync();
+
+        var exercises = await Database!
+                                .Table<ExerciseItem>()
+                                .Where(i => i.Category == category)
+                                .ToListAsync();
+
+        foreach (var exercise in exercises)
+            exercise.Partials = await Database!
+                                        .Table<ExercisePartial>()
+                                        .Where(p => p.ExerciseID == exercise.ID)
+                                        .ToListAsync();
+
+        return exercises;
+    }
 }
