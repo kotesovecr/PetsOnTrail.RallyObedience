@@ -18,7 +18,15 @@ public class ParkourViewBase : ComponentBase
     private static Func<int, string, string, double, double, Task>? UpdateParkourExerciseInternalAsync;
     private static Func<int, string, string, double, double, Task>? DeleteParkourExerciseInternalAsync;
 
+    protected bool DisplayPalletteCreator { get; set; } = false;
+    protected bool DisplayROZ { get; set; } = true;
+    protected bool DisplayRO1 { get; set; } = false;
+    protected bool DisplayRO2 { get; set; } = false;
+    protected bool DisplayRO3 { get; set; } = false;
+
     protected ParkourItem? Parkour { get; set; }
+    protected List<ExerciseItem> Exercises { get; set; } = new();
+    protected List<string> IntoPallette { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -30,13 +38,14 @@ public class ParkourViewBase : ComponentBase
 
         if (Parkour is not null)
         {
-            var exercises = await ExerciseDbService.GetCategoryAsync("Z");
+            Exercises = await ExerciseDbService.GetCategoryAsync("Z");
+            IntoPallette = Parkour.Positions.SelectMany(p => p.Exercises.Select(e => e.ExerciseId)).ToList();
 
             // mPx - meter per pixels - 1m = 50px
             // width of parkour = 20m
             // height of parkour = 20m
             // await module.InvokeVoidAsync("drawParkour", 50, 20, 20, Parkour, false, exercises);
-            await module.InvokeVoidAsync("drawParkour", 50, 20, 20, Parkour, true, exercises);
+            await module.InvokeVoidAsync("drawParkour", 50, 20, 20, Parkour, true, Exercises.Where(e => IntoPallette.Contains(e.ID)));
         }
     }
 
@@ -53,6 +62,27 @@ public class ParkourViewBase : ComponentBase
                 Console.WriteLine(ex.Message);
             }
         }
+    }
+
+    protected async Task UpdatePalletteList(string exerciseId, string value)
+    {
+        var isChecked = bool.Parse(value);
+
+        if (isChecked)
+        {
+            IntoPallette.Add(exerciseId);
+        }
+        else
+        {
+            if (Parkour != null && Parkour.Positions.Any(p => p.Exercises.Any(e => e.ExerciseId == exerciseId)))
+                return;
+
+            IntoPallette.Remove(exerciseId);
+        }
+
+        StateHasChanged();
+
+        await module.InvokeVoidAsync("drawParkour", 50, 20, 20, Parkour, true, Exercises.Where(e => IntoPallette.Contains(e.ID)));
     }
 
     [JSInvokable]

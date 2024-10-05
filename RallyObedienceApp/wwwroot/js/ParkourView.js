@@ -92,22 +92,16 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
         // Draw positions and exercises
         for (const position of positions) {
             let imgPadding = 0;
-            let numberPadding = 0;
 
             for (const exercise of position.exercises) {
-                let currentPadding = imgPadding;
-                let currentNumberPadding = numberPadding;
-
                 //context.fillText(JSON.stringify(exercise), 10, 10, 1000, 1000);
                 // return;
                 if (exercise.exerciseId in allImages) {
-                    context.drawImage(allImages[exercise.exerciseId], position.left * mPx + padding + currentPadding + currentNumberPadding, position.top * mPx + padding, mPx, mPx);
+                    context.drawImage(allImages[exercise.exerciseId], position.left * mPx + padding + imgPadding, position.top * mPx + padding, mPx, mPx);
 
                     // Draw exercise number over the image
                     if (exercise.number !== "") {
-                        imgPadding += mPx;
-
-                        const squareX = position.left * mPx + padding + currentPadding + currentNumberPadding;
+                        const squareX = position.left * mPx + padding + imgPadding;
                         const squareY = position.top * mPx + padding;
 
                         context.fillStyle = 'lightblue';
@@ -124,6 +118,8 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
                         const textY = squareY + mPx / 4;
                         context.fillText(exercise.number, textX, textY);
                     }
+
+                    imgPadding += mPx;
                 }
             }
         }
@@ -151,7 +147,19 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
                 }
 
                 if (exercise.id in allImages) {
-                    context.drawImage(allImages[exercise.id], exercisePositions[exerciseIdx].x, exercisePositions[exerciseIdx].y, exercisePositions[exerciseIdx].width, exercisePositions[exerciseIdx].height);
+                    context.drawImage(allImages[exercise.id],
+                        exercisePositions[exerciseIdx].x,
+                        exercisePositions[exerciseIdx].y,
+                        exercisePositions[exerciseIdx].width,
+                        exercisePositions[exerciseIdx].height);
+
+                    context.textAlign = 'left';
+                    context.textBaseline = 'top';
+                    context.fillText(exercisePositions[exerciseIdx].id,
+                        exercisePositions[exerciseIdx].x + exercisePositions[exerciseIdx].width,
+                        exercisePositions[exerciseIdx].y + exercisePositions[exerciseIdx].height / 2,
+                        200,
+                        mPx);
                 }
             }
         }
@@ -206,6 +214,7 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
                             movingExercise = {
                                 id: exercise.exerciseId,
                                 id_position: position.id,
+                                number: exercise.number,
                                 x: position.left * mPx + padding,
                                 y: position.top * mPx + padding
                             };
@@ -270,13 +279,7 @@ export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) 
             }
 
             if (updating) {
-                let exercisePadding = 0;
-                for (let exercise of positions.find(p => p.id == movingExercise.id_position).exercises) {
-                    updateParkourExercise(movingExercise.id_position, exercise.id, exercise.number, (movingExercise.x - padding + exercisePadding) / mPx, (movingExercise.y - padding) / mPx);
-
-                    exercisePadding += mPx;
-                };
-                
+                updateParkourExercise(movingExercise.id_position, movingExercise.id, movingExercise.number, (movingExercise.x - padding) / mPx, (movingExercise.y - padding) / mPx);
                 updating = false;
             }
 

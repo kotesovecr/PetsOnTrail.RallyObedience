@@ -1,8 +1,5 @@
 ﻿@inherits ParkourViewBase
 
-@using SkiaSharp
-@using SkiaSharp.Views.Blazor
-
 @if (Parkour is null)
 {
     <h4>Loading ...</h4>
@@ -13,6 +10,136 @@ else
     <h2>@Parkour.Author</h2>
     <p>@((MarkupString) Parkour.Description)</p>
     <h3>@Parkour.Category</h3>
+}
+
+@if (Exercises is null || Exercises.Any() == false)
+{
+    <h4>Loading ...</h4>
+}
+else
+{
+    <button class="btn btn-primary" @onclick="() => DisplayPalletteCreator = !DisplayPalletteCreator">Display pallette creator</button>
+    @if (DisplayPalletteCreator)
+    {
+        <button class="btn btn-secondary" @onclick="() => DisplayROZ = !DisplayROZ">RO-Z</button>
+        <button class="btn btn-secondary" @onclick="() => DisplayRO1 = !DisplayRO1">RO-1</button>
+        <button class="btn btn-secondary" @onclick="() => DisplayRO2 = !DisplayRO2">RO-2</button>
+        <button class="btn btn-secondary" @onclick="() => DisplayRO3 = !DisplayRO3">RO-3</button>
+        <div class="container">
+            <div class="row">
+                @if (DisplayROZ)
+                {
+                    <div class="col-3">
+                        <table class="table">
+                            <thead>
+                                <tr><th>RO-Z</th></tr>
+                                <tr>
+                                    <th>X</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exercise in Exercises.Where(e => e.Category == "Z").ToList())
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" @onchange="async (e) => await UpdatePalletteList(exercise.ID, e.Value.ToString())" /></td>
+                                        <td>@exercise.ID</td>
+                                        <td>@exercise.Name</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                @if (DisplayRO1)
+                {
+                    <div class="col-3">
+                        <table class="table">
+                            <thead>
+                                <tr><th>RO-1</th></tr>
+                                <tr>
+                                    <th>X</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exercise in Exercises.Where(e => e.Category == "1").ToList())
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" @onchange="(e) => UpdatePalletteList(exercise.ID, e.Value.ToString())" /></td>
+                                        <td>@exercise.ID</td>
+                                        <td>@exercise.Name</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                @if (DisplayRO2)
+                {
+                    <div class="col-3">
+                        <table class="table">
+                            <thead>
+                                <tr><th>RO-2</th></tr>
+                                <tr>
+                                    <th>X</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exercise in Exercises.Where(e => e.Category == "2").ToList())
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" @onchange="(e) => UpdatePalletteList(exercise.ID, e.Value.ToString())" /></td>
+                                        <td>@exercise.ID</td>
+                                        <td>@exercise.Name</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+                @if (DisplayRO3)
+                {
+                    <div class="col-3">
+                        <table class="table">
+                            <thead>
+                                <tr><th>RO-3</th></tr>
+                                <tr>
+                                    <th>X</th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var exercise in Exercises.Where(e => e.Category == "3").ToList())
+                                {
+                                    <tr>
+                                        <td><input type="checkbox" @onchange="(e) => UpdatePalletteList(exercise.ID, e.Value.ToString())" /></td>
+                                        <td>@exercise.ID</td>
+                                        <td>@exercise.Name</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <hr />
+        @foreach (var pe in IntoPallette)
+        {
+            <p>@pe</p>
+        }
+        <hr />
+    }
 }
 
 <div class="parkour-container">

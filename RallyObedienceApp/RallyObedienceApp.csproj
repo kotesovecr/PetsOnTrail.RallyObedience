@@ -66,9 +66,6 @@
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.91" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="8.0.91" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-        <PackageReference Include="SkiaSharp" Version="2.88.8" />
-        <PackageReference Include="SkiaSharp.Views" Version="2.88.8" />
-        <PackageReference Include="SkiaSharp.Views.Blazor" Version="2.88.8" />
         <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
         <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     </ItemGroup>
