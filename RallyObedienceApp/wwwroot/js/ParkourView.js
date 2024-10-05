@@ -1,5 +1,31 @@
-export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingExercises) {
+export function generateUUID() {
+    let
+        d = new Date().getTime(),
+        d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now() * 1000)) || 0;
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        let r = Math.random() * 16;
+        if (d > 0) {
+            r = (d + r) % 16 | 0;
+            d = Math.floor(d / 16);
+        } else {
+            r = (d2 + r) % 16 | 0;
+            d2 = Math.floor(d2 / 16);
+        }
+        return (c == 'x' ? r : (r & 0x7 | 0x8)).toString(16);
+    });
+};
+
+export function addParkourExercise(id, exerciseId, number, left, top) {
+    DotNet.invokeMethodAsync('RallyObedienceApp', 'AddParkourExerciseAsync', id, exerciseId, number, left, top)
+        .then(data => {
+            console.log(data);
+        });
+}
+
+export async function drawParkour(mPx, h, w, parkour, enableDrawing, exercises) {
     const padding = 50;
+
+    const positions = parkour.positions;
 
     const height = h * mPx;
     const width = w * mPx;
@@ -32,19 +58,12 @@ export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingEx
 
     // Extract exercise sources for preloading
     const exerciseSources = {};
-    positions.forEach(position => {
-        position.exercises.forEach(exercise => {
-            exerciseSources[exercise.src] = exercise.src; // Use src as key for preloading
-        });
-    });
-
-    const drawingSources = {};
-    drawingExercises.forEach(exercise => {
-        drawingSources[exercise.src] = exercise.src; // Use src as key for preloading
+    exercises.forEach(exercise => {
+        exerciseSources[exercise.id] = exercise.image;
     });
 
     // Preload all images
-    const allImages = await preloadImages({ ...exerciseSources, ...drawingSources });
+    const allImages = await preloadImages({ ...exerciseSources });
 
     function drawIt() {
         context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
@@ -72,15 +91,17 @@ export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingEx
                 let currentPadding = imgPadding;
                 let currentNumberPadding = numberPadding;
 
-                if (exercise.src in allImages) {
-                    context.drawImage(allImages[exercise.src], position.x * mPx + padding + currentPadding + currentNumberPadding, position.y * mPx + padding, mPx, mPx);
+                //context.fillText(JSON.stringify(exercise), 10, 10, 1000, 1000);
+                // return;
+                if (exercise.exerciseId in allImages) {
+                    context.drawImage(allImages[exercise.exerciseId], position.left * mPx + padding + currentPadding + currentNumberPadding, position.top * mPx + padding, mPx, mPx);
 
                     // Draw exercise number over the image
                     if (exercise.number !== "") {
                         imgPadding += mPx;
 
-                        const squareX = position.x * mPx + padding + currentPadding + currentNumberPadding;
-                        const squareY = position.y * mPx + padding;
+                        const squareX = position.left * mPx + padding + currentPadding + currentNumberPadding;
+                        const squareY = position.top * mPx + padding;
 
                         context.fillStyle = 'lightblue';
                         context.fillRect(squareX, squareY, mPx / 2, mPx / 2);
@@ -104,15 +125,17 @@ export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingEx
 
     // Enable drawing/dragging if required
     if (enableDrawing) {
-        let exercisePositions = new Array(drawingExercises.length);
+        let exercisePositions = new Array(exercises.length);
         const exercisePadding = 10; // Renamed for clarity
 
         function drawExerciseList(initialSet) {
-            for (let exerciseIdx = 0; exerciseIdx < drawingExercises.length; exerciseIdx++) {
-                const exercise = drawingExercises[exerciseIdx];
+            for (let exerciseIdx = 0; exerciseIdx < exercises.length; exerciseIdx++) {
+                const exercise = exercises[exerciseIdx];
 
                 if (initialSet) {
                     exercisePositions[exerciseIdx] = {
+                        id: exercise.id,
+                        number: exercise.number,
                         x: width + mPx + exercisePadding,
                         y: exerciseIdx * mPx + exercisePadding,
                         width: mPx,
@@ -120,8 +143,8 @@ export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingEx
                     };
                 }
 
-                if (exercise.src in allImages) {
-                    context.drawImage(allImages[exercise.src], exercisePositions[exerciseIdx].x, exercisePositions[exerciseIdx].y, exercisePositions[exerciseIdx].width, exercisePositions[exerciseIdx].height);
+                if (exercise.id in allImages) {
+                    context.drawImage(allImages[exercise.id], exercisePositions[exerciseIdx].x, exercisePositions[exerciseIdx].y, exercisePositions[exerciseIdx].width, exercisePositions[exerciseIdx].height);
                 }
             }
         }
@@ -180,7 +203,24 @@ export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingEx
         canvas.addEventListener('mouseup', () => {
             isDragging = false;
             dragTarget = null;
+
+            // TODO: second parameter is number
+            let uuid = generateUUID();
+            addParkourExercise(uuid, movingExercise.id, "", movingExercise.x / mPx, movingExercise.y / mPx);
+
+            positions.push({
+                id: uuid,
+                exercises: [{
+                    exerciseId: movingExercise.id,
+                    number: ""
+                }],
+                left: movingExercise.x / mPx,
+                top: movingExercise.y / mPx
+            });
+
             movingExercise = null;
+
+            drawExerciseList(true);
         });
     }
 }

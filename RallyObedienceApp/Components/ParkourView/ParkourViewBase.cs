@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using Newtonsoft.Json.Linq;
 using RallyObedienceApp.Persistency;
 using RallyObedienceApp.Persistency.Models;
 
@@ -13,50 +14,29 @@ public class ParkourViewBase : ComponentBase
     [Inject] protected IJSRuntime JSRuntime { get; set; }
     IJSObjectReference module;
 
+    private static Func<string, string, string, double, double, Task>? AddParkourExerciseInternalAsync;
+    private static Func<int, string, string, double, double, Task>? UpdateParkourExerciseInternalAsync;
+    private static Func<int, string, string, double, double, Task>? DeleteParkourExerciseInternalAsync;
+
     protected ParkourItem? Parkour { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        AddParkourExerciseInternalAsync = LocalAddParkourExerciseInternalAsync;
+        UpdateParkourExerciseInternalAsync = LocalUpdateParkourExerciseInternalAsync;
+        DeleteParkourExerciseInternalAsync = LocalDeleteParkourExerciseInternalAsync;
+
         Parkour = await DbService.GetItemAsync(Id);
 
         if (Parkour is not null)
         {
-            var exerciseDictionary = new Dictionary<string, string>();
-            var exercisePartialDictionary = new Dictionary<string, bool>();
-            var exercises = Parkour.Positions.SelectMany(p => p.Exercises).Select(e => e.ExerciseId).Distinct();
-            foreach (var exerciseId in exercises)
-            {
-                var exercise = await ExerciseDbService.GetItemAsync(exerciseId);
-
-                exerciseDictionary[exerciseId] = exercise?.Image ?? string.Empty;
-                exercisePartialDictionary[exerciseId] = exercise?.Number.Contains("D") ?? false;
-            }
-
-            var positions = Parkour?.Positions
-                                .Select(p => new 
-                                    { 
-                                        y = p.Top, 
-                                        x = p.Left, 
-                                        exercises = p.Exercises
-                                                        .Select(e => new 
-                                                            { 
-                                                                src = exerciseDictionary[e.ExerciseId], 
-                                                                partial = exercisePartialDictionary[e.ExerciseId],
-                                                                number = e.Number
-                                                            })});
-
-            var exercisesToDraw = (await ExerciseDbService.GetCategoryAsync("Z"))
-                                            .Select(e => new
-                                                            {
-                                                                src = e.Image,
-                                                                name = e.Name,
-                                                            });
+            var exercises = await ExerciseDbService.GetCategoryAsync("Z");
 
             // mPx - meter per pixels - 1m = 50px
             // width of parkour = 20m
             // height of parkour = 20m
-            // await module.InvokeVoidAsync("drawParkour", 50, 20, 20, positions);
-            await module.InvokeVoidAsync("drawParkour", 50, 20, 20, positions, true, exercisesToDraw);
+            // await module.InvokeVoidAsync("drawParkour", 50, 20, 20, Parkour, false, exercises);
+            await module.InvokeVoidAsync("drawParkour", 50, 20, 20, Parkour, true, exercises);
         }
     }
 
@@ -73,5 +53,92 @@ public class ParkourViewBase : ComponentBase
                 Console.WriteLine(ex.Message);
             }
         }
+    }
+
+    [JSInvokable]
+    public static async Task<int> AddParkourExerciseAsync(string id, string exerciseId, string number, double x, double y)
+    {
+        if (AddParkourExerciseInternalAsync is { } actionAsync)
+        {
+            await actionAsync(id, exerciseId, number, x, y);
+        }
+
+        return 0;
+    }
+
+    [JSInvokable]
+    public static async Task<int> UpdateParkourExerciseAsync(int positionId, string exerciseId, string number, double x, double y)
+    {
+        if (UpdateParkourExerciseInternalAsync is { } actionAsync)
+        {
+            await actionAsync(positionId, exerciseId, number, x, y);
+        }
+
+        return 0;
+    }
+
+    [JSInvokable]
+    public static async Task<int> DeleteParkourExerciseAsync(int positionId, string exerciseId, string number, double x, double y)
+    {
+        if (DeleteParkourExerciseInternalAsync is { } actionAsync)
+        {
+            await actionAsync(positionId, exerciseId, number, x, y);
+        }
+
+        return 0;
+    }
+
+    private async Task LocalAddParkourExerciseInternalAsync(string id, string exerciseId, string number, double left, double top)
+    {
+        Parkour?.Positions.Add(new PositionDto
+        {
+            Exercises = new List<PositionExercises>
+            {
+                new PositionExercises
+                {
+                    ID = id,
+                    ExerciseId = exerciseId,
+                    Number = number,
+                    PositionID = Parkour.Positions.Count + 1
+                }
+            },
+            ID = Parkour.Positions.Count + 1,
+            Left = left,
+            ParkourID = Parkour.ID,
+            Rotation = 0.0,
+            Top = top
+        });
+
+        await DbService.UpdateItemAsync(Parkour);
+    }
+
+    private async Task LocalUpdateParkourExerciseInternalAsync(int positionId, string exerciseId, string number, double left, double top)
+    {
+        var exercise = Parkour?.Positions.FirstOrDefault(p => p.ID == positionId)?.Exercises.FirstOrDefault(e => e.ExerciseId == exerciseId);
+        if (exercise is not null)
+        {
+            exercise.Number = number;
+        }
+
+        var position = Parkour?.Positions.FirstOrDefault(p => p.ID == positionId);
+        if (position is not null)
+        {
+            position.Left = left;
+            position.Top = top;
+        }
+
+
+        await DbService.UpdateItemAsync(Parkour);
+    }
+
+    private async Task LocalDeleteParkourExerciseInternalAsync(int positionId, string exerciseId, string number, double left, double top)
+    {
+        Parkour?.Positions.FirstOrDefault(p => p.ID == positionId)?.Exercises.RemoveAll(e => e.ExerciseId == exerciseId && e.Number == number);
+        if (Parkour?.Positions.FirstOrDefault(p => p.ID == positionId)?.Exercises.Count == 0)
+        {
+            Parkour?.Positions.RemoveAll(p => p.ID == positionId);
+        }
+
+        await DbService.UpdateItemAsync(Parkour);
     }
 }

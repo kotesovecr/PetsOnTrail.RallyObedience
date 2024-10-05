@@ -33,8 +33,8 @@ public class PositionDto
 
 public class PositionExercises
 {
-    [PrimaryKey, AutoIncrement]
-    public int ID { get; set; }
+    [PrimaryKey]
+    public string ID { get; set; } = Guid.NewGuid().ToString();
 
     [ForeignKey(typeof(PositionDto))]
     public int PositionID { get; set; }

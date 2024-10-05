@@ -103,4 +103,19 @@ public class ParkourDbService
 
         return parkourItem;
     }
+
+    public async Task UpdateItemAsync(ParkourItem parkour)
+    {
+        await Database!.UpdateAsync(parkour);
+
+        foreach (var position in parkour.Positions)
+        {
+            await Database.InsertOrReplaceAsync(position);
+
+            foreach (var exercise in position.Exercises)
+            {
+                await Database.InsertOrReplaceAsync(exercise);
+            }
+        }
+    }
 }
