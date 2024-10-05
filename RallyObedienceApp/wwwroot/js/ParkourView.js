@@ -1,14 +1,50 @@
 export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingExercises) {
-    var padding = 50;
+    const padding = 50;
 
-    var height = h * mPx;
-    var width = w * mPx;
+    const height = h * mPx;
+    const width = w * mPx;
 
     const canvas = document.querySelector("canvas");
     canvas.width = width + padding + (enableDrawing ? 200 : 0);
     canvas.height = height + padding;
 
-    var context = canvas.getContext("2d");
+    const context = canvas.getContext("2d");
+
+    // Function to preload images
+    function preloadImages(sources) {
+        const images = {};
+        const promises = Object.keys(sources).map((key) => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.src = sources[key];
+                img.onload = () => {
+                    images[key] = img;
+                    resolve();
+                };
+                img.onerror = () => {
+                    console.error("Image failed to load:", sources[key]);
+                    reject();
+                };
+            });
+        });
+        return Promise.all(promises).then(() => images);
+    }
+
+    // Extract exercise sources for preloading
+    const exerciseSources = {};
+    positions.forEach(position => {
+        position.exercises.forEach(exercise => {
+            exerciseSources[exercise.src] = exercise.src; // Use src as key for preloading
+        });
+    });
+
+    const drawingSources = {};
+    drawingExercises.forEach(exercise => {
+        drawingSources[exercise.src] = exercise.src; // Use src as key for preloading
+    });
+
+    // Preload all images
+    const allImages = await preloadImages({ ...exerciseSources, ...drawingSources });
 
     function drawIt() {
         context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
@@ -36,14 +72,8 @@ export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingEx
                 let currentPadding = imgPadding;
                 let currentNumberPadding = numberPadding;
 
-                const img = new Image();
-                img.src = exercise.src;
-
-                img.onload = function () {
-                    if (exercise.number === "")
-                        numberPadding += mPx / 4; // Half padding for partial exercises
-
-                    context.drawImage(img, position.x * mPx + padding + currentPadding + currentNumberPadding, position.y * mPx + padding, mPx, mPx);
+                if (exercise.src in allImages) {
+                    context.drawImage(allImages[exercise.src], position.x * mPx + padding + currentPadding + currentNumberPadding, position.y * mPx + padding, mPx, mPx);
 
                     // Draw exercise number over the image
                     if (exercise.number !== "") {
@@ -66,13 +96,7 @@ export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingEx
                         const textY = squareY + mPx / 4;
                         context.fillText(exercise.number, textX, textY);
                     }
-                };
-
-                img.onerror = function () {
-                    console.error("Image failed to load:", exercise.src);
-                };
-
-                imgPadding += mPx;
+                }
             }
         }
     }
@@ -96,11 +120,8 @@ export async function drawParkour(mPx, h, w, positions, enableDrawing, drawingEx
                     };
                 }
 
-                const img = new Image();
-                img.src = exercise.src;
-
-                img.onload = function () {
-                    context.drawImage(img, exercisePositions[exerciseIdx].x, exercisePositions[exerciseIdx].y, exercisePositions[exerciseIdx].width, exercisePositions[exerciseIdx].height);
+                if (exercise.src in allImages) {
+                    context.drawImage(allImages[exercise.src], exercisePositions[exerciseIdx].x, exercisePositions[exerciseIdx].y, exercisePositions[exerciseIdx].width, exercisePositions[exerciseIdx].height);
                 }
             }
         }
