@@ -38,7 +38,12 @@ public class ParkourViewBase : ComponentBase
 
         if (Parkour is not null)
         {
-            Exercises = await ExerciseDbService.GetCategoryAsync("Z");
+            Exercises = (await ExerciseDbService.GetCategoryAsync("Z"))
+                    .Union(await ExerciseDbService.GetCategoryAsync("1"))
+                    .Union(await ExerciseDbService.GetCategoryAsync("2"))
+                    .Union(await ExerciseDbService.GetCategoryAsync("3"))
+                    .ToList();
+                
             IntoPallette = Parkour.Positions.SelectMany(p => p.Exercises.Select(e => e.ExerciseId)).ToList();
 
             // mPx - meter per pixels - 1m = 50px
